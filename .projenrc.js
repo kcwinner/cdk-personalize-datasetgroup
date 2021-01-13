@@ -49,7 +49,4 @@ project.addTask('test', {
   exec: 'yarn run clean && yarn run build:lambda && jest --passWithNoTests --updateSnapshot && yarn run eslint',
 });
 
-// project.addScripts({
-//   'bump': 'yarn run --silent no-changes || standard-version --prerelease rc',
-
 project.synth();
