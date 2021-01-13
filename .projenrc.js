@@ -3,9 +3,14 @@ const { AwsCdkConstructLibrary } = require('projen');
 const project = new AwsCdkConstructLibrary({
   author: 'Ken Winner',
   authorAddress: 'kcswinner@gmail.com',
-
+  description: 'Create an AWS Personalize Dataset Group, Interaction Schema, and more using the AWS CDK',
   name: 'cdk-personalize-datasetgroup',
   repositoryUrl: 'https://github.com/kcwinner/cdk-personalize-datasetgroup.git',
+  catalog: {
+    twitter: 'KenWin0x539'
+  },
+  defaultReleaseBranch: 'main',
+  codeCov: true,
 
   // Turn off dependabot for cdk dependencies
   dependabotOptions: {
