@@ -8,7 +8,6 @@ export async function handler(event: any, _: any) {
 
   // extract resource properties
   const props = event.ResourceProperties;
-  // const physicalId = event.PhysicalResourceId ?? undefined;
 
   const datasetGroupname = props.DatasetGroupName;
   const interactionsSchema = props.InteractionsSchema; // JSON string
@@ -91,15 +90,51 @@ async function updateDataset() {
 async function deleteDataset(name: string) {
   const personalize = new AWS.Personalize(); // Needs to be initialized here to use aws-sdk-mock
 
-  console.log(name);
-  console.log(personalize);
+  // List dataset groups
+  const datasetGroupsResult = await personalize.listDatasetGroups({
+    maxResults: 50
+  }).promise();
 
-  // TODO: Delete Tracker
+  const datasetGroup = datasetGroupsResult.datasetGroups?.find(dsgroup => dsgroup.name === name);
+  if (!datasetGroup || !datasetGroup.datasetGroupArn) throw new Error(`Could not find dataset group matching name: ${name}`);
 
-  // TODO: Delete Dataset
+  // Delete Tracker
+  const eventTrackersResult = await personalize.listEventTrackers({
+    datasetGroupArn: datasetGroup.datasetGroupArn,
+    maxResults: 50
+  }).promise();
 
-  // TODO: Delete Schema
+  const eventTracker = eventTrackersResult?.eventTrackers?.find(tracker => tracker.name === `${name}-tracker`);
+  if (eventTracker && eventTracker.eventTrackerArn) {
+    await personalize.deleteEventTracker({ eventTrackerArn: eventTracker.eventTrackerArn }).promise();
+  }
 
-  // TODO: Delete Dataset Group
+  // Delete Dataset
+  const datasetsResult = await personalize.listDatasets({
+    datasetGroupArn: datasetGroup.datasetGroupArn,
+    maxResults: 50
+  }).promise();
 
+  const dataset = datasetsResult?.datasets?.find(dataset => dataset.name === `${name}-dataset`);
+  if (dataset && dataset.datasetArn) await personalize.deleteDataset({ datasetArn: dataset.datasetArn }).promise();
+
+  // Delete Schema
+  const schemasResult = await personalize.listSchemas({
+    maxResults: 50
+  }).promise();
+
+  const schema = schemasResult?.schemas?.find(schema => schema.name === `${name}-interactions-schema`);
+  if (schema && schema.schemaArn) await personalize.deleteSchema({ schemaArn: schema.schemaArn }).promise();
+
+  // Delete Dataset Group
+  await personalize.deleteDatasetGroup({
+    datasetGroupArn: datasetGroup.datasetGroupArn
+  }).promise();
+
+  return {
+    Data: {
+      datasetGroupArn: datasetGroup?.datasetGroupArn,
+      trackingArn: eventTracker?.eventTrackerArn
+    }
+  }
 }
