@@ -11,13 +11,13 @@ export interface PersonalizeDatasetGroupProps {
    * The name for the Dataset Group
    * @default - `${id}-${STAGE}`
    */
-  datasetGroupName?: string;
+  readonly datasetGroupName?: string;
 
   /**
    * The schema to use for interactions
    * @default - json string representing default interaction schema
    */
-  interactionsSchema?: string;
+  readonly interactionsSchema?: string;
 }
 
 const defaultInteractionsSchema = JSON.stringify({
@@ -61,11 +61,6 @@ export class PersonalizeDatasetGroup extends Construct {
           statements: [
             new PolicyStatement({
               effect: Effect.ALLOW,
-              actions: ['cloudformation:*'],
-              resources: ['*'],
-            }),
-            new PolicyStatement({
-              effect: Effect.ALLOW,
               actions: [
                 'personalize:*',
               ],
@@ -78,7 +73,7 @@ export class PersonalizeDatasetGroup extends Construct {
 
     const personalizeCustomFunction = new Function(this, `${id}-custom-function`, {
       runtime: Runtime.NODEJS_12_X,
-      handler: 'handler',
+      handler: 'index.handler',
       code: Code.fromAsset(handlerCodeBundle),
       role: customPersonalizeFunctionRole,
       timeout: Duration.seconds(300),

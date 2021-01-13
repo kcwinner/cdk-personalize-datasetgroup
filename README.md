@@ -22,8 +22,8 @@ import * as cdk from '@aws-cdk/core';
 ...
 
 const personalizeDatasetGroup = new PersonalizeDatasetGroup(this, 'voxi-personalize', {
-    datasetGroupName: 'my-group-name', // Optional
-    interactionsSchema: '{...}' // Optional: json string of your interactions schema - defaults to a schema
+  datasetGroupName: 'my-group-name', // Optional
+  interactionsSchema: '{...}' // Optional: json string of your interactions schema - defaults to a schema
 });
 
 ...

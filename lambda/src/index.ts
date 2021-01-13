@@ -64,7 +64,7 @@ async function createDataset(name: string, interactionsSchema: string) {
   await personalize.createDataset({
     datasetGroupArn: datasetGroupArn,
     name: `${name}-interactions-dataset`,
-    datasetType: 'User-item interaction',
+    datasetType: 'Interactions', // Interactions | Items | Users
     schemaArn: createInteractionsSchemaResult.schemaArn
   }).promise();
 
@@ -115,7 +115,7 @@ async function deleteDataset(name: string) {
     maxResults: 50
   }).promise();
 
-  const dataset = datasetsResult?.datasets?.find(dataset => dataset.name === `${name}-dataset`);
+  const dataset = datasetsResult?.datasets?.find(dataset => dataset.name === `${name}-interactions-dataset`);
   if (dataset && dataset.datasetArn) await personalize.deleteDataset({ datasetArn: dataset.datasetArn }).promise();
 
   // Delete Schema
