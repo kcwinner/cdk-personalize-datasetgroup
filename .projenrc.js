@@ -7,7 +7,7 @@ const project = new AwsCdkConstructLibrary({
   name: 'cdk-personalize-datasetgroup',
   repositoryUrl: 'https://github.com/kcwinner/cdk-personalize-datasetgroup.git',
   catalog: {
-    twitter: 'KenWin0x539'
+    twitter: 'KenWin0x539',
   },
   defaultReleaseBranch: 'main',
   codeCov: true,
